@@ -32,22 +32,44 @@ for year in years:
         link = movie.find("a")
         title = movie.text.strip()
         if title.find(' - ') != -1:
-            #print(title[title.find('-'):])
-            title = title[:title.find('-')]
-            print(title)
-        stripped_movies.append(movie.text.strip())
+            title = title[:title.find(' - ')]
+        elif title.find(' — ') != -1:
+            title = title[:title.find(' — ')]
+        elif title.find(' — ') != -1:
+            title = title[:title.find(' — ')]
+        if "Shorts" not in title:
+            stripped_movies.append(title)
         if link != None:
             link = "https://en.wikipedia.org" + link['href']
         else:
             link = ""
         stripped_links.append(link)
-        #results = just_watch.search_for_item(query='the matrix')
+        #results = just_watch.search_for_item(query=title)
+        
+        try:
+            continue
+            #offers = results['items'][0]['offers']
+            #for offer in offers:
+                #if offer['monetization_type'] == 'flatrate':
+                    #print("streaming: " + offer['urls']['standard_web'])
+                    #watch.append(offer['urls']['standard_web'])
+                #elif offer['monetization_type'] == 'rent':
+                    #print("rent: " + offer['urls']['standard_web'])
+            #watch = list(dict.fromkeys(watch))
+        except KeyError:
+            watch = []
+        except IndexError:
+            watch = []
+        #print(title)
+        #print(watch)
+        where_watch.append(watch)
+        
     #print(stripped_movies)
     #print(stripped_links)
     csv_name = str(year) + ".csv"
     with open(csv_name, 'w', newline='') as csvfile:
         movie_writer = csv.writer(csvfile, delimiter=',')
-        movie_writer.writerow(stripped_movies + stripped_links)
+        movie_writer.writerow(stripped_movies + stripped_links + where_watch)
         
 #test query
 #results = just_watch.search_for_item(query='the matrix')
