@@ -1,4 +1,5 @@
 import requests
+import csv
 from bs4 import BeautifulSoup
 
 response = requests.get(
@@ -14,10 +15,19 @@ for year in years:
     full_list = soup.find(id=year).findNext(class_="multicol")
     links = full_list.find_all("a")
     movies = full_list.find_all("li")
-    print(movies)
+    stripped_links = []
+    stripped_movies = []
     #print(full_list)
     for movie in movies:
         #print(movie)
         link = movie.find("a")
-        print(link)
-        #print(movie.text.strip()
+        stripped_movies.append(movie.text.strip())
+        if link != None:
+            link = "https://en.wikipedia.org" + link['href']
+        stripped_links.append(link)
+    #print(stripped_movies)
+    #print(stripped_links)
+    csv_name = str(year) + ".csv"
+    with open(csv_name, 'w', newline='') as csvfile:
+        movie_writer = csv.writer(csvfile, delimiter=',')
+        movie_writer.writerow(['hello'] + ['world'])
