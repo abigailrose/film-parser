@@ -24,10 +24,12 @@ for year in years:
         stripped_movies.append(movie.text.strip())
         if link != None:
             link = "https://en.wikipedia.org" + link['href']
+        else:
+            link = ""
         stripped_links.append(link)
     #print(stripped_movies)
     #print(stripped_links)
     csv_name = str(year) + ".csv"
     with open(csv_name, 'w', newline='') as csvfile:
         movie_writer = csv.writer(csvfile, delimiter=',')
-        movie_writer.writerow(['hello'] + ['world'])
+        movie_writer.writerow(stripped_movies + stripped_links)
