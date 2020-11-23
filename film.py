@@ -25,10 +25,10 @@ for year in years:
     stripped_links = []
     stripped_movies = []
     where_watch = []
-    #print(full_list)
+    where_rent = []
     for movie in movies:
-        #print(movie)
         watch = []
+        rent = []
         link = movie.find("a")
         title = movie.text.strip()
         if title.find(' - ') != -1:
@@ -44,40 +44,34 @@ for year in years:
         else:
             link = ""
         stripped_links.append(link)
-        #results = just_watch.search_for_item(query=title)
+        results = just_watch.search_for_item(query=title)
         
         try:
-            continue
-            #offers = results['items'][0]['offers']
-            #for offer in offers:
-                #if offer['monetization_type'] == 'flatrate':
-                    #print("streaming: " + offer['urls']['standard_web'])
-                    #watch.append(offer['urls']['standard_web'])
-                #elif offer['monetization_type'] == 'rent':
-                    #print("rent: " + offer['urls']['standard_web'])
-            #watch = list(dict.fromkeys(watch))
+            offers = results['items'][0]['offers']
+            for offer in offers:
+                if offer['monetization_type'] == 'flatrate':
+                    watch.append(offer['urls']['standard_web'])
+                elif offer['monetization_type'] == 'rent':
+                    rent.append(offer['urls']['standard_web'])
+            watch = list(dict.fromkeys(watch))
+            rent = list(dict.fromkeys(rent))
         except KeyError:
             watch = []
+            rent = []
         except IndexError:
             watch = []
-        #print(title)
-        #print(watch)
+            rent = []
+        print(title)
+        print(watch)
+        print(rent)
         where_watch.append(watch)
+        where_rent.append(rent)
         
-    #print(stripped_movies)
-    #print(stripped_links)
     csv_name = str(year) + ".csv"
     with open(csv_name, 'w', newline='') as csvfile:
         movie_writer = csv.writer(csvfile, delimiter=',')
-        movie_writer.writerow(stripped_movies + stripped_links + where_watch)
-        
-#test query
-#results = just_watch.search_for_item(query='the matrix')
-#print(results['items'][0]['offers'])
-#offers = results['items'][0]['offers']
-
-#for offer in offers:
-#    print(offer['monetization_type'])
-#    if offer['monetization_type'] == 'flatrate':
-#        print(offer['urls']['standard_web'])
+        rows = zip(stripped_movies, stripped_links, where_watch, where_rent)
+        for row in rows:
+            movie_writer.writerow(row)
+       print(offer['urls']['standard_web'])
 
